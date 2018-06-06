@@ -3,7 +3,7 @@ from filelike.wrappers import Slice
 from filelike import tests
 
 import unittest
-from StringIO import StringIO
+from io import StringIO
  
 
 class Test_Slice_Whole(tests.Test_ReadWriteSeek):
@@ -74,14 +74,14 @@ class Test_Slice_StartStopResize(Test_Slice_Whole):
         f = Slice(StringIO("mytestdata"),start=2,stop=6)
         f.write("TE")
         f.seek(0)
-        self.assertEquals(f.read(),"TEst")
-        self.assertEquals(f._fileobj.getvalue(),"myTEstdata")
+        self.assertEqual(f.read(),"TEst")
+        self.assertEqual(f._fileobj.getvalue(),"myTEstdata")
         f.seek(0)
         self.assertRaises(IOError,f.write,"TESTDATA")
-        self.assertEquals(f._fileobj.getvalue(),"myTESTdata")
+        self.assertEqual(f._fileobj.getvalue(),"myTESTdata")
         # Resizability allows data to be overwritten
         f = Slice(StringIO("mytestdata"),start=2,stop=6,resizable=True)
         f.write("TESTDA")
-        self.assertEquals(f._fileobj.getvalue(),"myTESTDAta")
-        self.assertEquals(f.stop,8)
+        self.assertEqual(f._fileobj.getvalue(),"myTESTDAta")
+        self.assertEqual(f.stop,8)
         

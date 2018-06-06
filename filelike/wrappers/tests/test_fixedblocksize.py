@@ -3,7 +3,7 @@ import unittest
 from filelike.wrappers import FixedBlockSize
 from filelike import tests
 
-from StringIO import StringIO
+from io import StringIO
 
 class Test_FixedBlockSize5(tests.Test_ReadWriteSeek):
     """Testcases for the FixedBlockSize class, with blocksize 5."""
@@ -16,11 +16,11 @@ class Test_FixedBlockSize5(tests.Test_ReadWriteSeek):
         class BSFile:
             """Simulate reads/writes, asserting correct blocksize."""
             def read(s,size=-1):
-                self.assert_(size < 0 or size % self.blocksize == 0)
+                self.assertTrue(size < 0 or size % self.blocksize == 0)
                 return f.read(size)
             def write(s,data):
                 if not s._flushing:
-                    self.assert_(len(data)%self.blocksize == 0)
+                    self.assertTrue(len(data)%self.blocksize == 0)
                 f.write(data)
             def seek(s,offset,whence):
                 f.seek(offset,whence)

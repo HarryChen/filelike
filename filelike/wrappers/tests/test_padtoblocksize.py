@@ -2,7 +2,7 @@
 from filelike.wrappers import PadToBlockSize, UnPadToBlockSize
 from filelike import tests, NotSeekableError
 
-from StringIO import StringIO
+from io import StringIO
 
 
 class Test_PadToBlockSize5(tests.Test_ReadWriteSeek):
@@ -35,8 +35,8 @@ class Test_PadToBlockSize5(tests.Test_ReadWriteSeek):
     def test_padding(self):
         for (plain,padded) in zip(self.text_plain,self.text_padded):
             f = self.makeFile(padded,"rw")
-            self.assert_(len(padded) % self.blocksize == 0)
-            self.assertEquals(f._fileobj.getvalue(),plain)
+            self.assertTrue(len(padded) % self.blocksize == 0)
+            self.assertEqual(f._fileobj.getvalue(),plain)
 
     def test_write_zeds(self):
         f = self.makeFile("","w")
@@ -46,7 +46,7 @@ class Test_PadToBlockSize5(tests.Test_ReadWriteSeek):
         f.write("mbedded in it Z")
         f.write(f._padding(txt))
         f.flush()
-        self.assertEquals(f._fileobj.getvalue(),txt)
+        self.assertEqual(f._fileobj.getvalue(),txt)
 
     def test_write_at_end(self):
         pass
@@ -94,7 +94,7 @@ class Test_UnPadToBlockSize5(tests.Test_ReadWriteSeek):
     def test_padding(self):
         for (plain,padded) in zip(self.text_plain,self.text_padded):
             f = self.makeFile(plain,"rw")
-            self.assertEquals(f._fileobj.getvalue(),padded)
+            self.assertEqual(f._fileobj.getvalue(),padded)
 
     def test_write_zeds(self):
         f = self.makeFile("","w")
@@ -103,13 +103,13 @@ class Test_UnPadToBlockSize5(tests.Test_ReadWriteSeek):
         f.write("ith lots of Z's e")
         f.write("mbedded in it Z")
         f.flush()
-        self.assertEquals(f._fileobj.getvalue(),txt + f._padding(txt))
+        self.assertEqual(f._fileobj.getvalue(),txt + f._padding(txt))
 
     def test_read_zeds(self):
         f = self.makeFile("","r")
         txt = "test data Z with lots of Z's embedded in it Z"
         f._fileobj = StringIO(txt + f._padding(txt))
-        self.assertEquals(f.read(),txt)
+        self.assertEqual(f.read(),txt)
 
 
 class Test_UnPadToBlockSize7(Test_UnPadToBlockSize5):

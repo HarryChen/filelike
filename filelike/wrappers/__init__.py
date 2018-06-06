@@ -147,7 +147,7 @@ class FileWrapper(FileLikeBase):
     
     def _read(self,sizehint=-1):
         data = self._fileobj.read(sizehint)
-        if data == "":
+        if data == b"":
             return None
         return data
 

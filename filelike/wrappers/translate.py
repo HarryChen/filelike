@@ -125,7 +125,7 @@ class Translate(FileWrapper):
         if self._read_eof:
             return None
         data = self._fileobj.read(sizehint)
-        if data == "":
+        if data == b"":
             self._read_eof = True
             tData = self._rfunc.flush()
             if tData is None:

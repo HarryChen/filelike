@@ -88,7 +88,7 @@ class PipelineEntry:
     
     def _create(self,fileobj,mode=None):
         """Create instance of the FileWrapper over given file object."""
-        if mode is not None and not self._kwds.has_key("mode"):
+        if mode is not None and "mode" not in self._kwds:
             kwds = self._kwds.copy()
             kwds["mode"] = mode
         else:

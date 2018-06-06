@@ -3,7 +3,7 @@ from filelike.wrappers import Decrypt, Encrypt
 from filelike import tests, NotSeekableError
 from filelike.wrappers.tests.test_buffer import def_getvalue_maybe_buffered
 import unittest
-from StringIO import StringIO
+from io import StringIO
 
 
 class Test_Encrypt(tests.Test_ReadWriteSeek):

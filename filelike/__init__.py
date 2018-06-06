@@ -96,9 +96,9 @@ __ver_tuple__ = (__ver_major__,__ver_minor__,__ver_patch__,__ver_sub__)
 __version__ = "%d.%d.%d%s" % __ver_tuple__
 
 
-from StringIO import StringIO
-import urllib2
-import urlparse
+from io import StringIO
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 import tempfile
 
 
@@ -270,7 +270,7 @@ class FileLikeBase(object):
         self.close()
         return False
     
-    def next(self):
+    def __next__(self):
         """next() method complying with the iterator protocol.
 
         File-like objects are their own iterators, with each call to
@@ -417,7 +417,7 @@ class FileLikeBase(object):
             while newData is not None:
                 data.append(newData)
                 newData = self._read()
-            output = "".join(data)
+            output = b"".join(data)
         # Otherwise, we need to return a specific amount of data
         else:
             if self._rbuffer:
@@ -433,7 +433,7 @@ class FileLikeBase(object):
                     break
                 data.append(newData)
                 sizeSoFar += len(newData)
-            data = "".join(data)
+            data = b"".join(data)
             if sizeSoFar > size:
                 # read too many bytes, store in the buffer
                 self._rbuffer = data[size:]
@@ -466,7 +466,7 @@ class FileLikeBase(object):
         # If not found, return whole string up to <size> length
         # Any leftovers are pushed onto front of buffer
         if indx == -1:
-            data = "".join(bits)
+            data = b"".join(bits)
             if size > 0 and sizeSoFar > size:
                 extra = data[size:]
                 data = data[:size]
@@ -478,7 +478,7 @@ class FileLikeBase(object):
         extra = bits[-1][indx:]
         bits[-1] = bits[-1][:indx]
         self._rbuffer = extra + self._rbuffer
-        return "".join(bits)
+        return b"".join(bits)
     
     def readlines(self,sizehint=-1):
         """Return a list of all lines in the file."""
@@ -636,7 +636,7 @@ class Opener(object):
         for o in self.openers:
             try:
                 f = o(filename,mode)
-            except IOError,e:
+            except IOError as e:
                 f = None
             if f is not None:
                 break
@@ -660,17 +660,17 @@ class Opener(object):
 def _urllib_opener(filename,mode):
     if mode not in ("r","r-"):
         return None
-    comps = urlparse.urlparse(filename)
+    comps = urllib.parse.urlparse(filename)
     # ensure it's a URL
     if comps[0] == "":
         return None
-    f = urllib2.urlopen(filename)
+    f = urllib.request.urlopen(filename)
     f.name = f.geturl()
     f.mode = mode
     return f
 def _file_opener(filename,mode):
     # Dont open URLS as local files
-    comps = urlparse.urlparse(filename)
+    comps = urllib.parse.urlparse(filename)
     if comps[0] and comps[1]:
         return None
     return file(filename,mode)
@@ -701,7 +701,7 @@ def is_filelike(obj,mode="rw"):
         if isinstance(obj,FileLikeBase):
             if not hasattr(obj,"_read"):
                 return False
-            if obj._read.im_class is FileLikeBase:
+            if obj._read.__self__.__class__ is FileLikeBase:
                 return False
         else:
             attrs = ("read","readline","readlines","__iter__",)
@@ -714,7 +714,7 @@ def is_filelike(obj,mode="rw"):
         if isinstance(obj,FileLikeBase):
             if not hasattr(obj,"_write"):
                 return False
-            if obj._write.im_class is FileLikeBase:
+            if obj._write.__self__.__class__ is FileLikeBase:
                 return False
         else:
             attrs = ("write","writelines","close")
@@ -726,7 +726,7 @@ def is_filelike(obj,mode="rw"):
         if isinstance(obj,FileLikeBase):
             if not hasattr(obj,"_seek"):
                 return False
-            if obj._seek.im_class is FileLikeBase:
+            if obj._seek.__self__.__class__ is FileLikeBase:
                 return False
         else:
             attrs = ("seek","tell",)
@@ -783,7 +783,7 @@ class join(FileLikeBase):
 
     def _read(self,sizehint=-1):
         data = self._files[self._curFile].read(sizehint)
-        if data == "":
+        if data == b"":
             if self._curFile == len(self._files) - 1:
                 return None
             else:
@@ -885,7 +885,7 @@ def to_filelike(obj,mode="r+"):
     if is_filelike(obj,mode):
         return obj
     # Strings can be wrapped using StringIO
-    if isinstance(obj,basestring):
+    if isinstance(obj,str):
         return StringIO(obj)
     # Anything with read() and/or write() can be trivially wrapped
     hasRead = hasattr(obj,"read")

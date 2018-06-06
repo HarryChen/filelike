@@ -1,6 +1,6 @@
 
 import unittest
-from StringIO import StringIO
+from io import StringIO
 
 from filelike.pipeline import *
 
@@ -23,7 +23,7 @@ class Test_Pipeline(unittest.TestCase):
         """Test a simple reading pipeline."""
         pf = self.ciphertext > Decrypt(self.cipher) | Head(bytes=10)
         txt = pf.read()
-        self.assertEquals(txt,self.plaintext[:10])
+        self.assertEqual(txt,self.plaintext[:10])
 
     def test_WriterLine(self):
         """Test a simple writer pipeline."""
@@ -31,5 +31,5 @@ class Test_Pipeline(unittest.TestCase):
         pf.write(self.plaintext)
         pf.flush()
         txt = self.outfile.getvalue()
-        self.assertEquals(txt,self.ciphertext[:15])
+        self.assertEqual(txt,self.ciphertext[:15])
 

@@ -173,7 +173,7 @@ class Buffer(FileWrapper):
             try:
                 self._buffer._file.truncate(size)
             except Exception:
-                raise et,ev,tb
+                raise et(ev).with_traceback(tb)
         # StringIO objects don't truncate to larger size correctly.
         if hasattr(self._buffer,"_file"):
             _file = self._buffer._file

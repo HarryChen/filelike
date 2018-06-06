@@ -3,7 +3,7 @@ from filelike.wrappers import Buffer, FlushableBuffer
 from filelike import tests
 
 import unittest
-from StringIO import StringIO
+from io import StringIO
 
 
 def get_buffered_value(f):
@@ -56,10 +56,10 @@ class Test_Buffer(tests.Test_ReadWriteSeek):
         s.close = noop
         f.write("testing")
         f.flush()
-        self.assertEquals(f.getvalue(),"testing")
-        self.assertEquals(s.getvalue(),"")
+        self.assertEqual(f.getvalue(),"testing")
+        self.assertEqual(s.getvalue(),"")
         f.close()
-        self.assertEquals(s.getvalue(),"testing")
+        self.assertEqual(s.getvalue(),"testing")
 
     def test_buffer_rw(self):
         f = self.makeFile("testing","r+")
@@ -70,10 +70,10 @@ class Test_Buffer(tests.Test_ReadWriteSeek):
         s.close = noop
         f.write("hello")
         f.flush()
-        self.assertEquals(f.getvalue(),"hellong")
-        self.assertEquals(s.getvalue(),"testing")
+        self.assertEqual(f.getvalue(),"hellong")
+        self.assertEqual(s.getvalue(),"testing")
         f.close()
-        self.assertEquals(s.getvalue(),"hellong")
+        self.assertEqual(s.getvalue(),"hellong")
 
     def test_buffer_a(self):
         f = self.makeFile("hello","a")
@@ -84,10 +84,10 @@ class Test_Buffer(tests.Test_ReadWriteSeek):
         s.close = noop
         f.write("testing")
         f.flush()
-        self.assertEquals(f.getvalue(),"testing")
-        self.assertEquals(s.getvalue(),"hello")
+        self.assertEqual(f.getvalue(),"testing")
+        self.assertEqual(s.getvalue(),"hello")
         f.close()
-        self.assertEquals(s.getvalue(),"hellotesting")
+        self.assertEqual(s.getvalue(),"hellotesting")
 
     def test_buffer_ra(self):
         f = self.makeFile("hello","a+")
@@ -98,10 +98,10 @@ class Test_Buffer(tests.Test_ReadWriteSeek):
         s.close = noop
         f.write("testing")
         f.flush()
-        self.assertEquals(f.getvalue(),"hellotesting")
-        self.assertEquals(s.getvalue(),"hello")
+        self.assertEqual(f.getvalue(),"hellotesting")
+        self.assertEqual(s.getvalue(),"hello")
         f.close()
-        self.assertEquals(s.getvalue(),"hellotesting")
+        self.assertEqual(s.getvalue(),"hellotesting")
 
 
 class Test_Buffer_rollover(Test_Buffer):
@@ -140,7 +140,7 @@ class Test_FlushableBuffer(tests.Test_ReadWriteSeek):
         s.close = noop
         f.write("testing")
         f.close()
-        self.assertEquals(s.getvalue(),"testing")
+        self.assertEqual(s.getvalue(),"testing")
 
     def test_buffer_rw(self):
         f = self.makeFile("testing","r+")
@@ -151,7 +151,7 @@ class Test_FlushableBuffer(tests.Test_ReadWriteSeek):
         s.close = noop
         f.write("hello")
         f.close()
-        self.assertEquals(s.getvalue(),"hellong")
+        self.assertEqual(s.getvalue(),"hellong")
 
     def test_buffer_a(self):
         f = self.makeFile("hello","a")
@@ -162,12 +162,12 @@ class Test_FlushableBuffer(tests.Test_ReadWriteSeek):
         s.close = noop
         f.write("testing")
         f.close()
-        self.assertEquals(s.getvalue(),"hellotesting")
+        self.assertEqual(s.getvalue(),"hellotesting")
 
     def test_buffer_ra(self):
         f = self.makeFile("hello","a+")
-        self.assertEquals(f._fileobj.tell(),5)
-        self.assertEquals(f.tell(),5)
+        self.assertEqual(f._fileobj.tell(),5)
+        self.assertEqual(f.tell(),5)
         s = f._fileobj
         close = s.close
         def noop():
@@ -175,7 +175,7 @@ class Test_FlushableBuffer(tests.Test_ReadWriteSeek):
         s.close = noop
         f.write("testing")
         f.close()
-        self.assertEquals(s.getvalue(),"hellotesting")
+        self.assertEqual(s.getvalue(),"hellotesting")
 
 
 class Test_FlushableBuffer_rollover(Test_FlushableBuffer):

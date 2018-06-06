@@ -54,7 +54,7 @@ class FixedBlockSize(FileWrapper):
         """Round <num> up to a multiple of the block size."""
         if num % self.blocksize == 0:
             return num
-        return ((num/self.blocksize)+1) * self.blocksize
+        return ((num//self.blocksize)+1) * self.blocksize
     
     def _round_down(self,num):
         """Round <num> down to a multiple of the block size."""
@@ -67,7 +67,7 @@ class FixedBlockSize(FileWrapper):
         if sizehint >= 0:
             sizehint = self._round_up(sizehint)
         data = self._fileobj.read(sizehint)
-        if data == "":
+        if data == b"":
             return None
         return data
 
@@ -81,7 +81,7 @@ class FixedBlockSize(FileWrapper):
         size = self._round_down(len(data))
         self._fileobj.write(data[:size])
         if len(data) == size:
-            return ""
+            return b""
         if not flushing:
             return data[size:]
         # Flushing, so we need to try to pad the data with existing contents.
@@ -90,13 +90,13 @@ class FixedBlockSize(FileWrapper):
             nextBlock = self._fileobj.read(self.blocksize)
             self._fileobj.seek(-1*len(nextBlock),1)
         else:
-            nextBlock = ""
+            nextBlock = b""
         padstart = len(data) - size
         self._fileobj.write(data[size:] + nextBlock[padstart:])
         # Seek back to start of previous block, if the file is readable.
         if self._check_mode("r"):
             self.seek(padstart - self.blocksize,1)
-        return ""
+        return b""
 
     # TODO: primitive implementation of relative seek
     def _seek(self,offset,whence):
@@ -110,7 +110,7 @@ class FixedBlockSize(FileWrapper):
         boundary = self._round_down(offset)
         self._fileobj.seek(boundary,0)
         if boundary == offset:
-            return ""
+            return b""
         else:
             data = self._fileobj.read(self.blocksize)
             diff = offset - boundary - len(data)

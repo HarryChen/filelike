@@ -28,7 +28,7 @@ For the moment, just prints to stdout.
 import filelike
 from filelike.wrappers import FileWrapper
 
-from StringIO import StringIO
+from io import StringIO
 
 
 class Debug(FileWrapper):
@@ -40,7 +40,7 @@ class Debug(FileWrapper):
 
     def _debug(self,action,*args):
         args = [repr(a) for a in args]
-        print "<%s : %s>  %s" % (self.label,action," | ".join(args))
+        print("<%s : %s>  %s" % (self.label,action," | ".join(args)))
     
     def __init__(self,fileobj,label="",mode=None):
         self.label = label

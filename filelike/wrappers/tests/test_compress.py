@@ -4,7 +4,7 @@ from filelike import tests
 from filelike.wrappers.tests.test_buffer import get_buffered_value, def_getvalue_maybe_buffered
 
 import unittest
-from StringIO import StringIO
+from io import StringIO
 
 import bz2
 import gzip
@@ -28,22 +28,22 @@ class Test_BZip2(tests.Test_ReadWriteSeek):
     def test_write_read(self):
         self.file.write(self.contents[0:5])
         c = self.file.read()
-        self.assertEquals(c,self.contents[5:])
+        self.assertEqual(c,self.contents[5:])
 
     def test_read_write_read(self):
         c = self.file.read(5)
-        self.assertEquals(c,self.contents[:5])
+        self.assertEqual(c,self.contents[:5])
         self.file.write(self.contents[5:10])
         c = self.file.read(5)
-        self.assertEquals(c,self.contents[10:15])
+        self.assertEqual(c,self.contents[10:15])
 
     def test_read_write_seek(self):
         c = self.file.read(5)
-        self.assertEquals(c,self.contents[:5])
+        self.assertEqual(c,self.contents[:5])
         self.file.write(self.contents[5:10])
         self.file.seek(0)
         c = self.file.read(10)
-        self.assertEquals(c,self.contents[:10])
+        self.assertEqual(c,self.contents[:10])
 
     def test_resulting_file(self):
         """Make sure BZip2 changes are pushed through to actual file."""
@@ -60,7 +60,7 @@ class Test_BZip2(tests.Test_ReadWriteSeek):
             f.seek(-6,1)
             f.write(bz2.compress("hello Australia!"))
             f.close()
-            self.assertEquals(open(fn).read(),"hello Australia!")
+            self.assertEqual(open(fn).read(),"hello Australia!")
         finally:
             os.unlink(fn)
 
@@ -92,7 +92,7 @@ class Test_UnBZip2(tests.Test_ReadWrite):
             f.seek(-6,1)
             f.write("tralia!")
             f.close()
-            self.assertEquals(open(fn).read(),bz2.compress("hello Australia!"))
+            self.assertEqual(open(fn).read(),bz2.compress("hello Australia!"))
         finally:
           os.unlink(fn)
 
@@ -130,22 +130,22 @@ class Test_GZip(tests.Test_ReadWriteSeek):
     def test_write_read(self):
         self.file.write(self.contents[0:5])
         c = self.file.read()
-        self.assertEquals(c,self.contents[5:])
+        self.assertEqual(c,self.contents[5:])
 
     def test_read_write_read(self):
         c = self.file.read(5)
-        self.assertEquals(c,self.contents[:5])
+        self.assertEqual(c,self.contents[:5])
         self.file.write(self.contents[5:10])
         c = self.file.read(5)
-        self.assertEquals(c,self.contents[10:15])
+        self.assertEqual(c,self.contents[10:15])
 
     def test_read_write_seek(self):
         c = self.file.read(5)
-        self.assertEquals(c,self.contents[:5])
+        self.assertEqual(c,self.contents[:5])
         self.file.write(self.contents[5:10])
         self.file.seek(0)
         c = self.file.read(10)
-        self.assertEquals(c,self.contents[:10])
+        self.assertEqual(c,self.contents[:10])
 
     def test_resulting_file(self):
         """Make sure GZip changes are pushed through to actual file."""
@@ -162,7 +162,7 @@ class Test_GZip(tests.Test_ReadWriteSeek):
             f.seek(-6,1)
             f.write(gz_compress("hello Australia!"))
             f.close()
-            self.assertEquals(open(fn).read(),"hello Australia!")
+            self.assertEqual(open(fn).read(),"hello Australia!")
         finally:
             os.unlink(fn)
 
@@ -194,7 +194,7 @@ class Test_UnGZip(tests.Test_ReadWrite):
             f.seek(-6,1)
             f.write("tralia!")
             f.close()
-            self.assertEquals(open(fn).read(),gz_compress("hello Australia!"))
+            self.assertEqual(open(fn).read(),gz_compress("hello Australia!"))
         finally:
           os.unlink(fn)
 

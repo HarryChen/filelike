@@ -3,7 +3,7 @@ from filelike.wrappers import Translate, BytewiseTranslate
 from filelike import tests, NotSeekableError
 
 import unittest
-from StringIO import StringIO
+from io import StringIO
 
 
 class Test_Translate(tests.Test_ReadWriteSeek):
