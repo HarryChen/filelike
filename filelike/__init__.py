@@ -446,7 +446,7 @@ class FileLikeBase(object):
     def _do_read_rest(self):
         """Private method to read the file through to EOF."""
         data = self._do_read(self._bufsize)
-        while data != "":
+        while data != b"":
             data = self._do_read(self._bufsize)
         
     def readline(self,size=-1):
