@@ -422,6 +422,9 @@ class FileLikeBase(object):
         else:
             if self._rbuffer:
                 newData = self._rbuffer
+                if len(newData) > size:
+                    self._rbuffer = newData[size:]
+                    return newData[:size]
                 data = [newData]
             else:
                 newData = ""
@@ -436,6 +439,7 @@ class FileLikeBase(object):
             data = b"".join(data)
             if sizeSoFar > size:
                 # read too many bytes, store in the buffer
+                data = memoryview(data)
                 self._rbuffer = data[size:]
                 data = data[:size]
             else:
